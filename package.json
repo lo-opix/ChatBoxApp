@@ -1,0 +1,16 @@
+{
+  "name": "first-websockets",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "start http://192.168.1.27:3000/ && node server.js"
+  },
+  "keywords": [],
+  "author": "Loopix",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.7.2"
+  }
+}

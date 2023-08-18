@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Websockets</title>
+    <link rel="stylesheet" href="/client/styles.css">
+</head>
+<body>
+
+
+<div id="chatBox">
+    <div id="chat-header">
+        <div id="chat-users-connected">0 online</div>
+        <div id="chat-title">ChatBox</div>
+        <div id="pingTxt">0ms</div>
+
+    </div>
+    <div id="chat-div">
+
+    </div>
+    <div id="chat-input-div">
+        <input id="chat-input-text" type="text">
+        <button id="chat-input-button"><img src="/client/icons/send_FILL1_wght400_GRAD0_opsz48.svg"></button>
+    </div>
+</div>
+
+
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+<script src="/client/app.js"></script>
+</body>
+</html>
