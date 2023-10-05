@@ -59,6 +59,7 @@ function createMessage(senderName, message) {
     if (message.slice(0, 8) == "https://"){
         messageSpan = document.createElement("a");
         messageSpan.href = message
+        messageSpan.target = "_blank"
     }else{
         messageSpan = document.createElement("span");
     }
