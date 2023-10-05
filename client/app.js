@@ -58,6 +58,7 @@ function createMessage(senderName, message) {
     let messageSpan;
     if (message.slice(0, 8) == "https://"){
         messageSpan = document.createElement("a");
+        messageSpan.href = message
     }else{
         messageSpan = document.createElement("span");
     }
