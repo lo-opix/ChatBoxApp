@@ -5,6 +5,10 @@
 body{
     margin: 0;
 }
+.chat-message-user{
+    font-weight: bold;
+    color: #d5d5d5;
+}
 
 #chatBox {
     height: calc(100vh - 10px);
@@ -94,6 +98,9 @@ body{
 .chat-shake-element{
     animation: horizontal-shaking 0.3s ease-in-out ;
 }
+.chat-message-appear{
+    animation: fadeIn 0.2s ease-in-out ;
+}
 
 @keyframes horizontal-shaking {
  0% { transform: translateX(0) }
@@ -101,4 +108,9 @@ body{
  50% { transform: translateX(-5px) }
  75% { transform: translateX(5px) }
  100% { transform: translateX(0) }
+}
+
+@keyframes fadeIn {
+ 0% { opacity: 0; transform: translateX(10px) }
+ 100% { opacity: 1; transform: translateY(0) }
 }

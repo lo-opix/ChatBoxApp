@@ -14,11 +14,8 @@ app.get('/', (req, res) => {
 users = []
 
 io.on('connection', (socket) => {
-    setTimeout(() => {
-        io.emit("usersCount", io.engine.clientsCount)
-    }, 100)
 
-    console.log('a user connected');
+    console.log('a user connected: ' + (users.length+1) + ' users connected');
 
     socket.on('disconnect', () => {
         console.log('user disconnected')
@@ -40,12 +37,19 @@ io.on('connection', (socket) => {
         users.push(username)
     })
 
-    setInterval(() => {
-        io.emit("sync-users", users)
-    }, 5000)
+    socket.on("sync-users-asked", (callback) => {
+        callback({users: users, nbUsers: users.length})
+    })
 
     socket.on("disconnect", () => {
         users.splice(users.indexOf(thisUser), 1)
+    })
+
+    socket.on("kick-user", (username, password) => {
+        if(password == "12345"){
+            users.splice(users.indexOf(username), 1)
+            io.sockets.emit("kicked", username)
+        }
     })
 
 });
@@ -56,3 +60,6 @@ server.listen(3000, () => {
     console.log('listening on *:3000');
 });
 
+setInterval(() => {
+    io.sockets.emit("sync-users", {users: users, nbUsers: users.length})
+}, 5000)
