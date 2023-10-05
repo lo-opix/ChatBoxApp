@@ -61,6 +61,9 @@ function createMessage(senderName, message) {
 
     document.getElementById("chat-div").appendChild(messageDiv);
 
+    var objDiv = document.getElementById("chat-div");
+    objDiv.scrollTop = objDiv.scrollHeight;
+
 }
 
 function sendMessageFromClient() {

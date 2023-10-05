@@ -36,6 +36,7 @@
 #chat-div {
     flex: 1;
     background: #424242;
+    overflow: auto;
 }
 
 #chat-input-div {
