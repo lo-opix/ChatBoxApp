@@ -55,9 +55,16 @@ function createMessage(senderName, message) {
     const separator = document.createElement("span");
     separator.textContent = ":"
 
-    const messageSpan = document.createElement("span");
+    let messageSpan;
+    if (message.slice(0, 8) == "https://"){
+        messageSpan = document.createElement("a");
+    }else{
+        messageSpan = document.createElement("span");
+    }
+
     messageSpan.textContent = message;
     messageSpan.className = "chat-message-txt"
+    
 
     messageDiv.appendChild(usernameSpan);
     messageDiv.appendChild(separator);
