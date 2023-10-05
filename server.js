@@ -11,6 +11,8 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + "/client/index.html");
 });
 
+users = []
+
 io.on('connection', (socket) => {
     setTimeout(() => {
         io.emit("usersCount", io.engine.clientsCount)
@@ -31,9 +33,25 @@ io.on('connection', (socket) => {
         socket.broadcast.emit("newMessage", content);
     })
 
+    let thisUser;
+
+    socket.on("add-user", (username) => {
+        thisUser = username
+        users.push(username)
+    })
+
+    setInterval(() => {
+        socket.emit("sync-users", users)
+    }, 5000)
+
+    socket.on("disconnect", () => {
+        users.splice(users.indexOf(thisUser), 1)
+    })
+
 });
 
 
 server.listen(3000, () => {
     console.log('listening on *:3000');
 });
+

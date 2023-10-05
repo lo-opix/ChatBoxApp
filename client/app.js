@@ -1,20 +1,28 @@
+
 let socket = io();
 
 
 let everAsked = false
 let username;
 
+users = []
+
 function askUsername() {
     if (everAsked) {
         username = prompt("Username not valid, please enter your username");
-        if (username == null) {
+        if (username == "" || username == null) {
             askUsername()
+        }
+        else{CSSMathMax
+            socket.emit("add-user", username)
         }
     } else {
         username = prompt("Please enter your username");
-        if (username == null) {
+        if (username == "" || username == null) {
             everAsked = true
             askUsername()
+        }else{
+            socket.emit("add-user", username)
         }
     }
 }
@@ -22,15 +30,11 @@ function askUsername() {
 askUsername()
 
 
-setInterval(() => {
-    const start = Date.now();
 
-    socket.emit("ping", () => {
-        const duration = Date.now() - start;
-        document.getElementById("pingTxt").textContent = duration + "ms";
-    });
-}, 1000);
-
+socket.on("sync-users" , (remote_users) => {
+    users = remote_users
+    console.log(remote_users)
+})
 
 socket.on("newMessage", (content) => {
     createMessage(content.user, content.msg)
@@ -122,3 +126,7 @@ document.addEventListener('keydown', (event) => {
     }
 }, false);
 
+
+document.getElementById("chat-users-btn").addEventListener("click", () => {
+    alert("Users connected: " + users.join(", "))
+})
