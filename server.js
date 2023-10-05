@@ -40,7 +40,9 @@ io.on('connection', (socket) => {
         users.push(username)
     })
 
-    
+    setInterval(() => {
+        io.emit("sync-users", users)
+    }, 5000)
 
     socket.on("disconnect", () => {
         users.splice(users.indexOf(thisUser), 1)
@@ -48,9 +50,7 @@ io.on('connection', (socket) => {
 
 });
 
-setInterval(() => {
-    io.broadcast.emit("sync-users", users)
-}, 5000)
+
 
 server.listen(3000, () => {
     console.log('listening on *:3000');
