@@ -17,6 +17,7 @@ function askUsername() {
         }
         else{
             socket.emit("add-user", username)
+            document.getElementById("chat-title").textContent = "ChatBox - " + username
         }
     } else {
         username = prompt("Please enter your username");
@@ -26,6 +27,7 @@ function askUsername() {
             askUsername()
         }else{
             socket.emit("add-user", username)
+            document.getElementById("chat-title").textContent = "ChatBox - " + username
         }
     }
 }

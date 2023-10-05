@@ -25,6 +25,20 @@ body{
     color: red;
 }
 
+#chat-users-btn{
+    padding: 5px;
+    border-radius: 5px;
+    border: 0;
+    background: #383838;
+    color: whitesmoke;
+    font-size: larger;
+}
+
+#chat-users-btn:hover{
+    background: #4d4d4d;
+}
+
+
 #chat-users-connected{
     font-size: small;
 }
