@@ -10,6 +10,11 @@
     flex-direction: column;
 }
 
+.self-send-user{
+    text-decoration: underline;
+    color: red;
+}
+
 #chat-users-connected{
     font-size: small;
 }

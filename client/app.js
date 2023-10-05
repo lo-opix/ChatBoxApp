@@ -46,7 +46,11 @@ function createMessage(senderName, message) {
 
     const usernameSpan = document.createElement("span");
     usernameSpan.textContent = senderName;
-    usernameSpan.className = "chat-message-user"
+    if(senderName == "You"){
+        usernameSpan.className = "chat-message-user self-send-user"
+    }else{
+        usernameSpan.className = "chat-message-user"
+    }
 
     const separator = document.createElement("span");
     separator.textContent = ":"
