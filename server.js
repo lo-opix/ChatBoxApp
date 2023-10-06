@@ -1,25 +1,26 @@
-const express = require('express');
+const express = require("express");
 const app = express();
-const http = require('http');
+const http = require("http");
 const server = http.createServer(app);
-const {Server} = require("socket.io");
+const { Server } = require("socket.io");
 const io = new Server(server);
+
+const ADMIN_PASSWORD = "12345";
 
 app.use("/client", express.static(__dirname + "/client"));
 
-app.get('/', (req, res) => {
+app.get("/", (req, res) => {
     res.sendFile(__dirname + "/client/index.html");
 });
 
-users = []
+users = [];
 
-io.on('connection', (socket) => {
+io.on("connection", (socket) => {
+    console.log("a user connected: " + (users.length + 1) + " users connected");
 
-    console.log('a user connected: ' + (users.length+1) + ' users connected');
-
-    socket.on('disconnect', () => {
-        console.log('user disconnected')
-        io.emit("usersCount", io.engine.clientsCount)
+    socket.on("disconnect", () => {
+        console.log("user disconnected");
+        io.emit("usersCount", io.engine.clientsCount);
     });
 
     socket.on("ping", (callback) => {
@@ -28,38 +29,41 @@ io.on('connection', (socket) => {
 
     socket.on("message", (content) => {
         socket.broadcast.emit("newMessage", content);
-    })
+    });
 
     let thisUser;
 
     socket.on("add-user", (username) => {
-        thisUser = username
-        users.push(username)
-    })
+        thisUser = username;
+        users.push(username);
+    });
 
     socket.on("sync-users-asked", (callback) => {
-        callback({users: users, nbUsers: users.length})
-    })
+        callback({ users: users, nbUsers: users.length });
+    });
 
     socket.on("disconnect", () => {
-        users.splice(users.indexOf(thisUser), 1)
-    })
+        users.splice(users.indexOf(thisUser), 1);
+    });
 
     socket.on("kick-user", (username, password) => {
-        if(password == "12345"){
-            users.splice(users.indexOf(username), 1)
-            io.sockets.emit("kicked", username)
+        if (password == ADMIN_PASSWORD) {
+            users.splice(users.indexOf(username), 1);
+            io.sockets.emit("kicked", username);
         }
-    })
+    });
 
+    socket.on("reload-lobby", (password) => {
+        if (password == ADMIN_PASSWORD) {
+            io.sockets.emit("force-reload");
+        }
+    });
 });
 
-
-
 server.listen(3000, () => {
-    console.log('listening on *:3000');
+    console.log("listening on *:3000");
 });
 
 setInterval(() => {
-    io.sockets.emit("sync-users", {users: users, nbUsers: users.length})
-}, 5000)
+    io.sockets.emit("sync-users", { users: users, nbUsers: users.length });
+}, 5000);

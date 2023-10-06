@@ -10,6 +10,25 @@ body{
     color: #d5d5d5;
 }
 
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #515151;
+    
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #212121;
+    border-radius: 10px;
+  }
+
+
 #chatBox {
     height: calc(100vh - 10px);
     width: calc(100vw - 10px);
@@ -65,7 +84,7 @@ body{
 #chat-div {
     flex: 1;
     background: #424242;
-    overflow: auto;
+    overflow: hidden auto;
 }
 
 #chat-input-div {
@@ -107,6 +126,8 @@ body{
 
 .chat-message-txt{
     padding-left: 3px;
+    word-wrap: break-word;
+    max-width: calc(100vw - 65px);
 }
 
 .chat-shake-element{
