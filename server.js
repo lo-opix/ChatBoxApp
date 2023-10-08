@@ -6,6 +6,8 @@ const { Server } = require("socket.io");
 const io = new Server(server);
 
 const ADMIN_PASSWORD = "12345";
+let usernameColorsRemaining = ["red", "yellow", "green", "blue", "orange", "purple", "pink"]
+
 
 app.use("/client", express.static(__dirname + "/client"));
 
@@ -35,7 +37,9 @@ io.on("connection", (socket) => {
 
     socket.on("add-user", (username) => {
         thisUser = username;
-        users.push(username);
+        let color = usernameColorsRemaining[Math.floor(Math.random() * usernameColorsRemaining.length)];
+        usernameColorsRemaining.splice(usernameColorsRemaining.indexOf(color), 1);
+        users.push({username: username, color: color});
     });
 
     socket.on("sync-users-asked", (callback) => {
@@ -43,12 +47,13 @@ io.on("connection", (socket) => {
     });
 
     socket.on("disconnect", () => {
-        users.splice(users.indexOf(thisUser), 1);
+        usernameColorsRemaining.push(users[users.findIndex(user => user.username === thisUser)].color)
+        users.splice(users.findIndex(user => user.username === thisUser), 1);
     });
 
     socket.on("kick-user", (username, password) => {
         if (password == ADMIN_PASSWORD) {
-            users.splice(users.indexOf(username), 1);
+            users.splice(users.findIndex(user => user.username === thisUser), 1);
             io.sockets.emit("kicked", username);
         }
     });

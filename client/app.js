@@ -6,11 +6,11 @@ let username;
 users = [];
 nbUsers = 0;
 
+
 function askUsername() {
     if (everAsked) {
         username = prompt("Username not valid, please enter your username");
-        console.log(username, users, users.includes(username));
-        if (username == "" || username == null || users.includes(username)) {
+        if (username == "" || username == null || users.some((e) => e.username == username)) {
             askUsername();
         } else {
             socket.emit("add-user", username);
@@ -19,8 +19,7 @@ function askUsername() {
         }
     } else {
         username = prompt("Please enter your username");
-        console.log(username, users, users.includes(username));
-        if (username == "" || username == null || users.includes(username)) {
+        if (username == "" || username == null || users.some((e) => e.username == username)) {
             everAsked = true;
             askUsername();
         } else {
@@ -38,10 +37,16 @@ socket.emit("sync-users-asked", (res) => {
 });
 
 socket.on("sync-users", (args) => {
+    
     users = args.users;
     nbUsers = args.nbUsers;
     document.getElementById("chat-users-connected").textContent =
         nbUsers + " online";
+
+    const userObject = users.find(user => user.username === username);
+    if (userObject) {
+        document.getElementById("chat-badge-status").className = "badge-green";
+    }
 });
 
 socket.on("newMessage", (content) => {
@@ -53,11 +58,16 @@ function createMessage(senderName, message) {
     messageDiv.className = "chat-message chat-message-appear";
 
     const usernameSpan = document.createElement("span");
-    usernameSpan.textContent = senderName;
-    if (senderName == "You") {
-        usernameSpan.className = "chat-message-user self-send-user";
+    
+    
+
+    if (senderName.username == username) {
+        usernameSpan.className = "chat-message-user" + " txt-" + senderName.color;
+        messageDiv.classList.add("chat-message-self-user");
+        usernameSpan.textContent = username;
     } else {
-        usernameSpan.className = "chat-message-user";
+        usernameSpan.className = "chat-message-user " + "txt-" + senderName.color;
+        usernameSpan.textContent = senderName.username;
     }
 
     const separator = document.createElement("span");
@@ -111,8 +121,9 @@ function sendMessageFromClient() {
         return -2;
     }
     if (message !== "") {
-        socket.emit("message", { msg: message, user: username });
-        createMessage("You", message);
+        const userObject = users.find(user => user.username === username);
+        socket.emit("message", { msg: message, user: userObject});
+        createMessage(userObject, message);
         return 0;
     } else {
         return -1;
@@ -159,7 +170,14 @@ document.addEventListener(
 );
 
 document.getElementById("chat-users-btn").addEventListener("click", () => {
-    alert("Users connected: " + users.join(", "));
+    let allUsers = ""
+    users.forEach(user => {
+        if (allUsers != ""){
+            allUsers += ", ";
+        }
+        allUsers += user.username;
+    });
+    alert("Users connected: " + allUsers);
 });
 
 socket.on("kicked", (remote_username) => {
@@ -173,6 +191,11 @@ socket.on("kicked", (remote_username) => {
 socket.on("force-reload", () => {
     window.location.reload();
 });
+
+socket.on("disconnect", () => {
+    let statusBadge = document.getElementById("chat-badge-status");
+    statusBadge.className = "badge-red"
+})
 
 function kickUser() {
     const username = prompt("Enter the username of the user you want to kick");

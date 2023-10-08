@@ -1,3 +1,8 @@
+:root{
+    --bg-color: rgb(66, 66, 66);
+    --bg-border-color: #2c2c2c;
+}
+
 * {
     font-family: 'Roboto', sans-serif;
 }
@@ -32,7 +37,7 @@ body{
 #chatBox {
     height: calc(100vh - 10px);
     width: calc(100vw - 10px);
-    background: #2c2c2c;
+    background: var(--bg-border-color);
     padding: 5px;
     display: flex;
     position: fixed;
@@ -68,6 +73,21 @@ body{
     font-size: small;
 }
 
+#chat-header-middle-element{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+#chat-badge-status{
+    margin-left: 1rem;
+    border-radius: 50%;
+    height: 1rem;
+    width: 1rem;
+    display: inline-block;
+    transition: 1s all ease-in-out;
+}
+
 #chat-header {
     padding: 10px;
     margin: 0;
@@ -83,7 +103,7 @@ body{
 
 #chat-div {
     flex: 1;
-    background: #424242;
+    background: var(--bg-color);
     overflow: hidden auto;
 }
 
@@ -148,4 +168,40 @@ body{
 @keyframes fadeIn {
  0% { opacity: 0; transform: translateX(10px) }
  100% { opacity: 1; transform: translateY(0) }
+}
+
+
+/* Usernames colors */
+.txt-red {
+    color: #ff0000;
+}
+.txt-yellow {
+    color: #ffee00;
+}
+.txt-green {
+    color: #00d700;
+}
+.txt-blue {
+    color: #00aaff;
+}
+.txt-orange {
+    color: #cb8700;
+}
+.txt-purple {
+    color: #800080;
+}
+.txt-pink {
+    color: #ff69b4;
+}
+
+
+/* badges colors */
+.badge-red {
+    background-color: #ff0000;
+}
+.badge-green {
+    background-color: #00d700;
+}
+.badge-white {
+    background-color: #c1c1c1;
 }
