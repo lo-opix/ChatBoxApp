@@ -28,10 +28,18 @@ io.on("connection", (socket) => {
         console.log(`user disconnected: ${thisUser}`);
 
         if (users.findIndex((user) => user.username === thisUser) != -1) {
-            usernameColorsRemaining.push(
-                users[users.findIndex((user) => user.username === thisUser)]
-                    .color
+            users.splice(
+                users.findIndex((user) => user.username === thisUser),
+                1
             );
+            try{
+                usernameColorsRemaining.push(
+                    users[users.findIndex((user) => user.username === thisUser)]
+                        .color
+                );
+            }catch{
+                usernameColorsRemaining = COLORS;
+            }
         }
     });
 

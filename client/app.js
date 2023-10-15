@@ -95,7 +95,7 @@ function createMessage(senderName, message) {
             messageSpan.target = "_blank";
         }
     } else {
-        messageSpan = document.createElement("span");
+        messageSpan = document.createElement("pre");
         messageSpan.textContent = message;
     }
 
@@ -150,6 +150,7 @@ document.getElementById("chat-input-button").addEventListener("click", () => {
 document.addEventListener(
     "keydown",
     (event) => {
+        // Send message on enter
         if (event.code === "Enter") {
             let err = sendMessageFromClient();
             if (err === -1) {
@@ -164,6 +165,11 @@ document.addEventListener(
             } else if (err === -2) {
                 askUsername();
             }
+        }
+
+        // CTRL + V
+        if(event.key === 'v' && event.ctrlKey){
+            sendClipBoard();
         }
     },
     false
@@ -207,3 +213,21 @@ function reloadLobby() {
     const password = prompt("Enter the password");
     socket.emit("reload-lobby", password);
 }
+
+
+function sendClipBoard() {
+    navigator.clipboard.readText().then(
+        clipText => {
+            if(clipText != ""){
+                console.log
+                const userObject = users.find(user => user.username === username);
+                socket.emit("message", { msg: clipText, user: userObject});
+                createMessage(userObject, clipText);
+                document
+                    .getElementById("chat-input-text")
+                    .innerHTML = "";
+            }
+        }
+    )
+}
+

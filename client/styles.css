@@ -146,6 +146,7 @@ body{
 
 .chat-message-txt{
     padding-left: 3px;
+    margin: 0;
     word-wrap: break-word;
     max-width: calc(100vw - 65px);
 }
