@@ -6,7 +6,10 @@ const { Server } = require("socket.io");
 const io = new Server(server);
 
 const ADMIN_PASSWORD = "12345";
-let usernameColorsRemaining = ["red", "yellow", "green", "blue", "orange", "purple", "pink"]
+
+const COLORS = ["red", "yellow", "green", "blue", "orange", "purple", "pink"];
+
+let usernameColorsRemaining = COLORS;
 
 
 app.use("/client", express.static(__dirname + "/client"));
@@ -47,7 +50,12 @@ io.on("connection", (socket) => {
     });
 
     socket.on("disconnect", () => {
-        usernameColorsRemaining.push(users[users.findIndex(user => user.username === thisUser)].color)
+        try{
+            usernameColorsRemaining.push(users[users.findIndex(user => user.username === thisUser)].color)
+        }catch{
+            console.log("Error when trying to add color back to the array, resetting the Color Array")
+            usernameColorsRemaining = COLORS;
+        }
         users.splice(users.findIndex(user => user.username === thisUser), 1);
     });
 
