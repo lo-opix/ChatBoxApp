@@ -11,7 +11,6 @@ const COLORS = ["red", "yellow", "green", "blue", "orange", "purple", "pink"];
 
 let usernameColorsRemaining = COLORS;
 
-
 app.use("/client", express.static(__dirname + "/client"));
 
 app.get("/", (req, res) => {
@@ -21,11 +20,19 @@ app.get("/", (req, res) => {
 users = [];
 
 io.on("connection", (socket) => {
+    let thisUser;
+
     console.log("a user connected: " + (users.length + 1) + " users connected");
 
     socket.on("disconnect", () => {
-        console.log("user disconnected");
-        io.emit("usersCount", io.engine.clientsCount);
+        console.log(`user disconnected: ${thisUser}`);
+
+        if (users.findIndex((user) => user.username === thisUser) != -1) {
+            usernameColorsRemaining.push(
+                users[users.findIndex((user) => user.username === thisUser)]
+                    .color
+            );
+        }
     });
 
     socket.on("ping", (callback) => {
@@ -36,32 +43,29 @@ io.on("connection", (socket) => {
         socket.broadcast.emit("newMessage", content);
     });
 
-    let thisUser;
-
     socket.on("add-user", (username) => {
         thisUser = username;
-        let color = usernameColorsRemaining[Math.floor(Math.random() * usernameColorsRemaining.length)];
-        usernameColorsRemaining.splice(usernameColorsRemaining.indexOf(color), 1);
-        users.push({username: username, color: color});
+        let color =
+            usernameColorsRemaining[
+                Math.floor(Math.random() * usernameColorsRemaining.length)
+            ];
+        usernameColorsRemaining.splice(
+            usernameColorsRemaining.indexOf(color),
+            1
+        );
+        users.push({ username: username, color: color });
     });
 
     socket.on("sync-users-asked", (callback) => {
         callback({ users: users, nbUsers: users.length });
     });
 
-    socket.on("disconnect", () => {
-        try{
-            usernameColorsRemaining.push(users[users.findIndex(user => user.username === thisUser)].color)
-        }catch{
-            console.log("Error when trying to add color back to the array, resetting the Color Array")
-            usernameColorsRemaining = COLORS;
-        }
-        users.splice(users.findIndex(user => user.username === thisUser), 1);
-    });
-
     socket.on("kick-user", (username, password) => {
         if (password == ADMIN_PASSWORD) {
-            users.splice(users.findIndex(user => user.username === thisUser), 1);
+            users.splice(
+                users.findIndex((user) => user.username === thisUser),
+                1
+            );
             io.sockets.emit("kicked", username);
         }
     });
