@@ -5,13 +5,14 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
 
-const ADMIN_PASSWORD = "12345";
+const ADMIN_PASSWORD = process.argv.slice(2)[0];
 
 const COLORS = ["red", "yellow", "green", "blue", "orange", "purple", "pink"];
 
 let usernameColorsRemaining = COLORS;
 
 app.use("/client", express.static(__dirname + "/client"));
+app.use("/version", express.static("VERSION"));
 
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/client/index.html");
@@ -75,12 +76,14 @@ io.on("connection", (socket) => {
                 1
             );
             io.sockets.emit("kicked", username);
+            console.log(`User kicked: ${username} by ${thisUser}`)
         }
     });
 
     socket.on("reload-lobby", (password) => {
         if (password == ADMIN_PASSWORD) {
             io.sockets.emit("force-reload");
+            console.log(`Lobby reloaded by ${thisUser}`)
         }
     });
 });

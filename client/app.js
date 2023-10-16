@@ -6,11 +6,20 @@ let username;
 users = [];
 nbUsers = 0;
 
+fetch(window.location.href + "version").then((res) => {
+    res.text().then((txt) => {
+        document.getElementById("chat-version").textContent = "v" + txt;
+    });
+});
 
 function askUsername() {
     if (everAsked) {
         username = prompt("Username not valid, please enter your username");
-        if (username == "" || username == null || users.some((e) => e.username == username)) {
+        if (
+            username == "" ||
+            username == null ||
+            users.some((e) => e.username == username)
+        ) {
             askUsername();
         } else {
             socket.emit("add-user", username);
@@ -19,7 +28,11 @@ function askUsername() {
         }
     } else {
         username = prompt("Please enter your username");
-        if (username == "" || username == null || users.some((e) => e.username == username)) {
+        if (
+            username == "" ||
+            username == null ||
+            users.some((e) => e.username == username)
+        ) {
             everAsked = true;
             askUsername();
         } else {
@@ -37,13 +50,12 @@ socket.emit("sync-users-asked", (res) => {
 });
 
 socket.on("sync-users", (args) => {
-    
     users = args.users;
     nbUsers = args.nbUsers;
     document.getElementById("chat-users-connected").textContent =
         nbUsers + " online";
 
-    const userObject = users.find(user => user.username === username);
+    const userObject = users.find((user) => user.username === username);
     if (userObject) {
         document.getElementById("chat-badge-status").className = "badge-green";
     }
@@ -58,15 +70,15 @@ function createMessage(senderName, message) {
     messageDiv.className = "chat-message chat-message-appear";
 
     const usernameSpan = document.createElement("span");
-    
-    
 
     if (senderName.username == username) {
-        usernameSpan.className = "chat-message-user" + " txt-" + senderName.color;
+        usernameSpan.className =
+            "chat-message-user" + " txt-" + senderName.color;
         messageDiv.classList.add("chat-message-self-user");
         usernameSpan.textContent = username;
     } else {
-        usernameSpan.className = "chat-message-user " + "txt-" + senderName.color;
+        usernameSpan.className =
+            "chat-message-user " + "txt-" + senderName.color;
         usernameSpan.textContent = senderName.username;
     }
 
@@ -121,8 +133,8 @@ function sendMessageFromClient() {
         return -2;
     }
     if (message !== "") {
-        const userObject = users.find(user => user.username === username);
-        socket.emit("message", { msg: message, user: userObject});
+        const userObject = users.find((user) => user.username === username);
+        socket.emit("message", { msg: message, user: userObject });
         createMessage(userObject, message);
         return 0;
     } else {
@@ -168,7 +180,7 @@ document.addEventListener(
         }
 
         // CTRL + V
-        if(event.key === 'v' && event.ctrlKey){
+        if (event.key === "v" && event.ctrlKey) {
             sendClipBoard();
         }
     },
@@ -176,9 +188,9 @@ document.addEventListener(
 );
 
 document.getElementById("chat-users-btn").addEventListener("click", () => {
-    let allUsers = ""
-    users.forEach(user => {
-        if (allUsers != ""){
+    let allUsers = "";
+    users.forEach((user) => {
+        if (allUsers != "") {
             allUsers += ", ";
         }
         allUsers += user.username;
@@ -200,8 +212,8 @@ socket.on("force-reload", () => {
 
 socket.on("disconnect", () => {
     let statusBadge = document.getElementById("chat-badge-status");
-    statusBadge.className = "badge-red"
-})
+    statusBadge.className = "badge-red";
+});
 
 function kickUser() {
     const username = prompt("Enter the username of the user you want to kick");
@@ -214,20 +226,18 @@ function reloadLobby() {
     socket.emit("reload-lobby", password);
 }
 
-
 function sendClipBoard() {
-    navigator.clipboard.readText().then(
-        clipText => {
-            if(clipText != ""){
-                console.log
-                const userObject = users.find(user => user.username === username);
-                socket.emit("message", { msg: clipText, user: userObject});
-                createMessage(userObject, clipText);
-                document
-                    .getElementById("chat-input-text")
-                    .innerHTML = "";
-            }
+    navigator.clipboard.readText().then((clipText) => {
+        if (clipText != "") {
+            console.log;
+            const userObject = users.find((user) => user.username === username);
+            socket.emit("message", { msg: clipText, user: userObject });
+            createMessage(userObject, clipText);
+            document.getElementById("chat-input-text").innerHTML = "";
         }
-    )
+    });
 }
 
+document.getElementById("chat-version").addEventListener("click", () => {
+    window.open("https://github.com/lo-opix/ChatBoxApp/commits/master/", "_blank");
+})
