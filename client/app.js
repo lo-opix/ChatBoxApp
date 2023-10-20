@@ -7,9 +7,10 @@ users = [];
 nbUsers = 0;
 
 fetch(window.location.href + "version").then((res) => {
+    if (res.status == 200){ // Cancel error happening when debugging 
     res.text().then((txt) => {
         document.getElementById("chat-version").textContent = "v" + txt;
-    });
+    });}
 });
 
 function askUsername() {
