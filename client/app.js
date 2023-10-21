@@ -60,6 +60,39 @@ socket.on("sync-users", (args) => {
     if (userObject) {
         document.getElementById("chat-badge-status").className = "badge-green";
     }
+
+    let htmlUsersList = document.getElementById("chat-user-connected-list-users").getElementsByTagName("li");
+
+    users.forEach((user) => {
+        let userFound = false;
+
+        for (let htmlUser = 0; htmlUser < htmlUsersList.length; htmlUser++) {
+            if (htmlUsersList[htmlUser].textContent == user.username) {
+                userFound = true;
+            }
+        }
+
+        if (!userFound) {
+            let li = document.createElement("li");
+            li.textContent = user.username;
+            li.className = "txt-" + user.color;
+            document.getElementById("chat-user-connected-list-users").appendChild(li);
+        }
+    });
+
+    for(let htmlUser = 0; htmlUser < htmlUsersList.length; htmlUser++) {
+        let userFound = false;
+
+        users.forEach((user) => {
+            if (htmlUsersList[htmlUser].textContent == user.username) { 
+                userFound = true;
+            }
+        })
+
+        if (!userFound) {
+            htmlUsersList[htmlUser].remove();
+        }
+    };
 });
 
 socket.on("newMessage", (content) => {
@@ -189,14 +222,7 @@ document.addEventListener(
 );
 
 document.getElementById("chat-users-btn").addEventListener("click", () => {
-    let allUsers = "";
-    users.forEach((user) => {
-        if (allUsers != "") {
-            allUsers += ", ";
-        }
-        allUsers += user.username;
-    });
-    alert("Users connected: " + allUsers);
+    document.getElementById("chat-user-connected-list").classList.toggle("show-users-list");
 });
 
 socket.on("kicked", (remote_username) => {
@@ -241,4 +267,8 @@ function sendClipBoard() {
 
 document.getElementById("chat-version").addEventListener("click", () => {
     window.open("https://github.com/lo-opix/ChatBoxApp/commits/master/", "_blank");
+})
+
+document.getElementById("chat-div").addEventListener("click", () => {
+    document.getElementById("chat-user-connected-list").classList.remove("show-users-list");
 })
