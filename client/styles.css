@@ -50,6 +50,7 @@ button:hover{
   /* Track */
   ::-webkit-scrollbar-track {
     background: #515151;
+    border-radius: 10px;
     
   }
   
